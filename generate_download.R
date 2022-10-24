@@ -2,20 +2,15 @@ library(tidyverse)
 library(magrittr)
 library(jsonlite)
 
-# temporary hack for running both mounted and on srver
-if(file.exists("/srv/data/")) {
-  BASE_PATH <- "/srv/data/MPV/"
-} else {
-  BASE_PATH <- "/Volumes/data/MPV/"
-}
-PROJECT_DIR <- paste0(BASE_PATH, 'projects/ecoli_pathotypes/')
-joined_meta_filt <- read_tsv(paste0(BASE_PATH, 'LEBC/ecoli_joined_meta_filtered.tsv'))
+args = commandArgs(trailingOnly=T)
+PROJECT_DIR = args[1] # directory containing files and subfolders, must end with a /
+
+joined_meta_filt <- read_tsv(paste0(PROJECT_DIR, 'ecoli_joined_meta_filtered.tsv'), guess_max=100000)
 
 # we have used the API to download fasta links, load them and filter and check that they're all there
-fasta_tsv <- fromJSON(paste0(BASE_PATH, 'LEBC/enterobase_meta_with_links.json')) %>% bind_rows()
+fasta_tsv <- fromJSON(paste0(PROJECT_DIR, 'enterobase_meta_with_links.json')) %>% bind_rows()
 
 #length(intersect(fasta_tsv$assembly_barcode, joined_meta_filt$`Assembly barcode`))/nrow(joined_meta_filt)
-
 #joined_meta_filt_with_fasta <- joined_meta_filt %>% left_join(fasta_tsv %>% select(assembly_barcode, download_fasta_link), by=c('Assembly barcode'='assembly_barcode'))
 
 fasta_in_desired_seqs <- fasta_tsv %>% filter(assembly_barcode %in% joined_meta_filt$`Assembly barcode`)
