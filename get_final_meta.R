@@ -10,7 +10,7 @@ PROJECT_DIR = args[1] # directory containing files and subfolders, must end with
 # samples that failed in the case that they were unavailable due to enterobase instability
 # rather than other reasons
 
-fasta_sizes <- read.table(paste0(PROJECT_DIR, '/file_sizes_oct11.txt'))
+fasta_sizes <- read.table(paste0(PROJECT_DIR, '/fasta_file_sizes.txt'))
 range(fasta_sizes$V1)
 hist(fasta_sizes$V1)
 
