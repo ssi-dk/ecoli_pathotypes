@@ -5,7 +5,7 @@ import re
 import subprocess
 parser = argparse.ArgumentParser()
 parser.add_argument("--kma_outputs", "-i", default = 'fdggfgg', help = "directory containing kma_results sub directories")
-parser.add_argument('--output_tsv', '-o', default = 'quast_outputs', help = 'file containing concatenated kma tsv')
+parser.add_argument('--output_tsv', '-o', default = 'kma_concantated', help = 'file containing concatenated kma tsv')
 args = parser.parse_args()
 
 files = [os.path.join(args.kma_outputs, i) for i in os.listdir(args.kma_outputs) if re.match('.*res', i)]

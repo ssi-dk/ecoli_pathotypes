@@ -8,7 +8,7 @@ parser.add_argument("--input_dir", "-i", default = 'fdggfgg', help = "directory 
 parser.add_argument("--fasta_idxs", "-j", default = None, help = 'indexes to slice fasta files, comma separated with two values')
 parser.add_argument('--kma_executable', '-k', default = 'kma', help = 'location of the kma executable')
 parser.add_argument("--kma_db", '-db', default='kma_test_db/genes_as_db', help = 'which indexed kma db to use')
-parser.add_argument('--output_dir', '-o', default = 'quast_outputs', help = 'output dir for putting kma output')
+parser.add_argument('--output_dir', '-o', default = 'kma_results', help = 'output dir for putting kma output')
 args = parser.parse_args()
 
 if not os.path.isdir(args.output_dir):
