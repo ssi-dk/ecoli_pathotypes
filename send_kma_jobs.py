@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--input_dir", "-i", default = 'fdggfgg', help = "directory containing fastas")
 parser.add_argument('--kma_executable', '-k', default = 'kma', help = 'location of the kma executable')
 parser.add_argument("--kma_db", '-db', default='kma_dbs/concatenated_genes_db', help = 'which indexed kma db to use')
-parser.add_argument('--output_dir', '-o', default = 'quast_outputs', help = 'output dir for putting kma output')
+parser.add_argument('--output_dir', '-o', default = 'kma_results', help = 'output dir for putting kma output')
 parser.add_argument('--chunk_size', '-chunk', default = 1000, help = 'chunk_size', type=int)
 args = parser.parse_args()
 

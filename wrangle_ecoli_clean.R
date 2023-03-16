@@ -8,11 +8,11 @@ PROJECT_DIR = args[1] # directory containing files and subfolders, must end with
 
 ecoli_meta <- read_tsv(paste0(PROJECT_DIR, 'meta_with_assemblystats.tsv'), guess_max=100000, col_types = cols(.default='?', 'Collection Time' = 'c'))
 meta_cgmlst <- read_tsv(paste0(PROJECT_DIR, 'meta_with_cgmlst.tsv'), guess_max=100000, col_types = cols(.default='?', 'Collection Time' = 'c')) %>% 
-  rename('cgMLST_Differences'='Differences', 'cgMLST_ST'='ST')
+  dplyr::rename('cgMLST_Differences'='Differences', 'cgMLST_ST'='ST')
 meta_wgmlst <- read_tsv(paste0(PROJECT_DIR, 'meta_with_wgmlst.tsv'), guess_max=100000, col_types = cols(.default='?', 'Collection Time' = 'c')) %>% 
-  rename('wgMLST_Differences'='Differences', 'wgMLST_ST'='ST')
+  dplyr::rename('wgMLST_Differences'='Differences', 'wgMLST_ST'='ST')
 meta_phylotypes <- read_tsv(paste0(PROJECT_DIR, 'meta_with_phylotypes.tsv'), guess_max=100000, col_types = cols(.default='?', 'Collection Time' = 'c')) %>% 
-  rename('phylotypeST'='ST')
+  dplyr::rename('phylotypeST'='ST')
 meta_achtman <- read_tsv(paste0(PROJECT_DIR, 'meta_with_achtman.tsv'), guess_max=100000, col_types = cols(.default='?', 'Collection Time' = 'c'))
 
 
