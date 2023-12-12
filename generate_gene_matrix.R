@@ -2,6 +2,7 @@ library(tidyverse)
 library(magrittr)
 library(Biostrings)
 library(data.table)
+library(cowplot)
 
 args = commandArgs(trailingOnly=T)
 PROJECT_DIR = args[1] # directory containing files and subfolders, must end with a /
@@ -52,7 +53,7 @@ assembly_gene_matrix <- bind_rows(gene_vectors, missing_mat)
 write_tsv(assembly_gene_matrix, paste0(PROJECT_DIR, 'assembly_gene_matrix.tsv'))
 
 # generate classifications and append them to the metadata file
-# generate a vector of genes supersets (i.e. not variants) that should be checked for matches
+# generate a vector of genes supersets (i.e. not variants) that should be checked for matches in the kma results
 # note that some capitalizations have been changed/added according to what exists in the concatenated_genes.fasta file
 gene_super_sets <- c('chuA', 'fyuA', 'vat', 'yfcV', # UPEC
                      'pap', 'sfa', 'foc', 'afa', 'Afa', 'Dra', 'iutA', 'kpsMII', # EXPEC
@@ -96,7 +97,7 @@ is.na(gene_bases) %>% sum() # difference between these two is caused by the uniq
 
 # looks like it's right, start making the function for classifying the types
 assign_pathotype <- function(vector.of.present.genes){ # vector of present genes (not variants) for a given assembly
-  #browser()
+  # we just enumerate the genes again because some of the conditions are not super easy to 'logic' out without checking for presence/absence
   init.match <- c()
   sfa.foc.matches <- any(c('sfa', 'foc') %in% vector.of.present.genes) %>% sum() # same gene so much be condensed
   afa.dra.matches <- any(c('afa', 'Afa', 'Dra') %in% vector.of.present.genes) %>% sum() # same gene, also one is named Afa instead of afa
@@ -131,35 +132,3 @@ meta_final %<>% mutate(pathotype_from_assembly=unname(pathotype_by_names[`Assemb
 print(paste0('writing metadata file with appended pathotypes to ', PROJECT_DIR))
 write_tsv(meta_final, paste0(PROJECT_DIR, 'joined_meta_filtered_no_missing_with_quast_results_and_pathotypes.tsv'))
 
-# some interactive sanity checking
-print('doing some sanity checking, meant to be done interactively in rstudio or smth')
-meta_final %<>% mutate(one_pathotype=pathotype_from_assembly %>% str_split(',') %>% lapply(function(x){x[[1]]}) %>% unlist())
-orig_pathotypes_formatted <- meta_final$Pathovar %>% sapply(function(x){
-  y <- x %>% gsub('Shigella.*', 'EIEC', .) %>% gsub('E. coli - ', '', .) %>% gsub('/', ',', .) %>% 
-    gsub('ND|-', 'unassigned', .) %>% gsub('EHEC', 'STEC', .)
-  y <- ifelse(is.na(y), 'unassigned', y)
-  return(y)
-})
-sum(orig_pathotypes_formatted==meta_final$pathotype_from_assembly)/nrow(meta_final) # only comparing the strings
-concordance_check <- function(x,y, sep=','){
-  #browser()
-  z <- x %>% str_split(',') %>% unlist()
-  u <- y %>% str_split(',') %>% unlist()
-  n.intersect <- length(intersect(z, u))
-  return(n.intersect)
-}
-pathotype_concordance <- mapply(concordance_check, meta_final$pathotype_from_assembly, orig_pathotypes_formatted)
-print(paste0('amount of assemblies for which there is at least one common label between the original pathovar and the assigned pathotype: ', sum(pathotype_concordance > 0)))
-# without unassigned
-no_unassigned_at_all <- meta_final$pathotype_from_assembly!='unassigned' & orig_pathotypes_formatted != 'unassigned'
-pathotype_concordance_no_unassigned <- mapply(concordance_check, 
-                                              meta_final$pathotype_from_assembly[no_unassigned_at_all], 
-                                              orig_pathotypes_formatted[no_unassigned_at_all])
-print(paste0('amount of assemblies for which there is at least one common label between the original pathovar and the assigned pathotype when filtering out all unassigned from both vectors: ', 
-             sum(pathotype_concordance_no_unassigned > 0)/sum(no_unassigned_at_all)))
-
-meta_final %>% ggplot(aes(x=N50, y=`Total length`, col=one_pathotype))+ geom_point()
-meta_final %>% ggplot(aes(x=`# contigs`, y=`Total length`, col=one_pathotype))+ geom_point()
-meta_final %>% ggplot(aes(y=N50, x=as.factor(one_pathotype)))+ geom_boxplot()
-meta_final %>% ggplot(aes(y=`Total length`, x=one_pathotype))+geom_violin()
-meta_final %>% ggplot(aes(y=`Total length`, x=`Release Date`))+geom_point()

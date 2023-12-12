@@ -8,7 +8,7 @@ parser.add_argument("--kma_outputs", "-i", default = 'fdggfgg', help = "director
 parser.add_argument('--output_tsv', '-o', default = 'kma_concantated', help = 'file containing concatenated kma tsv')
 args = parser.parse_args()
 
-files = [os.path.join(args.kma_outputs, i) for i in os.listdir(args.kma_outputs) if re.match('.*res', i)]
+files = [os.path.join(args.kma_outputs, i) for i in os.listdir(args.kma_outputs) if re.match('.*res$', i)]
 
 def read_kma_results(file_):
     tsv = pd.read_csv(file_, sep='\t')
