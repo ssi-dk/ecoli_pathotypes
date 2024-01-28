@@ -6,8 +6,12 @@ library(cowplot)
 library(RColorBrewer)
 library(UpSetR)
 library(scales)
+library(argparse)
 
-PROJECT_DIR <- '/Volumes/data/MPV/projects/ecoli_pathotypes/' # remove this when uploading to github
+parser <- ArgumentParser()
+parser$add_argument("-p", "--project_dir", help="directory containing all the relevant files and folders")
+
+PROJECT_DIR <- parser$project_dir
 kma_res <- read_tsv(paste0(PROJECT_DIR, 'concatenated_genes_kma_results.tsv'))
 kma_res %<>% mutate('assembly_barcode'=gsub('.fasta.res', '', fasta_name))
 # also filter based on template identity and template coverage

@@ -1,4 +1,3 @@
-#year_folder=/srv/data/CGC/consensus_rerun/SampleProc/2022
 
 for file in test_1000_samples/*
 do
